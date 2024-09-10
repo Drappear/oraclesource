@@ -1070,42 +1070,189 @@ COMMIT;
 -- 트랜잭션 종료
 
 
+SELECT * FROM DEPT_TCL;
+DELETE FROM DEPT_TCL WHERE DEPTNO = 50;
+COMMIT;
+
+UPDATE DEPT_TCL SET LOC = 'SEOUL' WHERE DEPTNO = 30;
+COMMIT;
+
+------------------------------------------------------------------------------
+-- DDL(데이터 정의어)
+-- 데이터베이스 데이터를 보관하고 관리하기 위해 제공되는 여러 객체의 생성/변경/삭제 관련 기능
+-- CREATE(생성) / ALTER(생성된 객체 변경) / DROP(생성된 객체 삭제)
+
+-- 1. 테이블 정의어
+CREATE TABLE 테이블명( 
+	열이름1 자료형,
+	열이름2 자료형,
+	열이름3 자료형,
+	열이름4 자료형....
+)
+
+-- 테이블 이름 작성 규칙
+--	 문자로 시작(한글 가능하나 사용하지 않음 / 숫자로 시작 못함)
+--	 길이 제한(30byte)
+--   같은 소유자 소유의 테이블 이름은 중복 불가능
+--   SQL 키워드는 사용 불가(SELECT, INSERT등)
+
+-- 열 이름 생성 규칙
+--	 문자로 시작
+--	 길이 제한이 있음(3Obyte)
+--	 한 테이블에 열 이름 중복 불가
+--	 열 이름은 영문자, 숫자, 특수문자(_, #, $) 사용 가능
+--	 SQL 키워드는 사용 불가
+
+-- 자료형
+--	 문자 : varchar2(길이), nvarchar2(길이), char(길이), nchar(길이)
+--			var : 가변(저장된 값의 길이만큼만 사용)
+--				ex) name varchar2(10) : 홍길동 - 9byte
+--					name char(10) : 홍길동 - 10byte (고정길이)
+--				DB 버전에 따라 한글 문자 하나당 2byte or 3byte 할당
+--					name varchar2(10) : 홍길동전 - 값의 크기가 커서 오류 발생
+--					name nvarchar2(10), nchar(10) : 10이 바이트 개념이아니라 문자 길이 자체를 의미 
+--	 숫자 : number(전체자릿수, 소수점자릿수)
+--	 날짜 : date
+--	 BLOB : 대용량 이진 데이터 저장
+--	 CLOB : 대용량 텍스트 데이터 저장
+
+CREATE TABLE EMP_DDL(
+	EMPNO NUMBER(4,0),
+	ENMAE VARCHAR2(10),
+	JOB VARCHAR2(9),
+	MGR NUMBER(4,0), 
+	HIREDATE DATE,
+	SAL NUMBER(7,2),
+	COMM NUMBER(7,2),
+	DEPTNO NUMBER(2,0)
+);
+
+SELECT * FROM EMP_DDL;
+
+-- DEPT 테이블의 열구조와 데이터 복사하여 새 테이블 생성
+CREATE TABLE DEPT_DDL AS SELECT * FROM DEPT;
+-- DEPT 테이블의 열구조만 복사하여 새 테이블 생성
+CREATE TABLE DEPT_DDL2 AS SELECT * FROM DEPT WHERE 1<>1;
+
+SELECT * FROM DEPT_DDL;
+SELECT * FROM DEPT_DDL2;
+
+-- ALTER : 변경
+-- 새로운 열 추가 / 열 이름 변경 / 열 삭제 / 열 자료형 변경
+-- EMP_DDL에 새로운 열(HP : 010-1234-5678) 추가
+ALTER TABLE EMP_DDL ADD HP VARCHAR2(20);
+
+ALTER TABLE EMP_DDL RENAME COLUMN HP TO TEL;
+
+SELECT * FROM EMP_DDL;
+
+-- EMPNO NUMBER(5)로 변경
+ALTER TABLE EMP_DDL MODIFY EMPNO NUMBER(5);
+
+-- TEL 삭제
+ALTER TABLE EMP_DDL DROP COLUMN TELL;
+
+-- 테이블 이름 변경
+RENAME EMP_DDL TO EMP_RENAME;
+
+-- DROP : 삭제
+DROP TABLE EMP_RENAME;
 
 
+CREATE TABLE MEMBER(
+	ID CHAR(8),
+	NAME VARCHAR2(10),
+	ADDR VARCHAR2(50),
+	NATION CHAR(4),
+	EMAIL VARCHAR2(50),
+	AGE NUMBER(7,2)	
+);
+
+ALTER TABLE MEMBER ADD BIGO VARCHAR2(20);
+
+ALTER TABLE MEMBER MODIFY BIGO VARCHAR2(30);
+
+ALTER TABLE MEMBER RENAME COLUMN BIGO TO REMARK;
+
+SELECT * FROM MEMBER;
+
+INSERT INTO MEMBER(ID, NAME, ADDR, NATION, EMAIL, AGE)
+SELECT 'hong1234', '홍길동', '서울시 구로구 개봉동', '대한민국', 'hong123@naver.com', 25 FROM DUAL
+UNION ALL
+SELECT 'hong1235', '이승기', '서울시 강서구 화곡동', '대한민국', 'lee89@naver.com', 26 FROM DUAL
+UNION ALL
+SELECT 'hong1236', '강호동', '서울시 마포구 상수동', '대한민국', 'kang56@naver.com', 42 FROM DUAL
+UNION ALL
+SELECT 'hong1237', '이수근', '경기도 부천시', '대한민국', 'leesu@naver.com', 42 FROM DUAL
+UNION ALL
+SELECT 'hong1238', '서장훈', '서울시 강남구 대치동', '대한민국', 'seo568@naver.com', 36 FROM DUAL
+UNION ALL
+SELECT 'hong1239', '김영철', '서울시 도봉구 도봉동', '대한민국', 'young@naver.com', 41 FROM DUAL
+UNION ALL
+SELECT 'hong1210', '김장훈', '서울시 노원구 노원1동', '대한민국', 'kim@naver.com', 48 FROM DUAL
+UNION ALL
+SELECT 'hong1211', '임창정', '서울시 양천구 신월동', '대한민국', 'limchang@naver.com', 45 FROM DUAL
+UNION ALL
+SELECT 'hong1212', '김종국', '서울시 강남구 도곡동', '대한민국', 'kimjong@naver.com', 44 FROM DUAL
+UNION ALL
+SELECT 'hong1213', '김범수', '경기도 일산동구 일산동', '대한민국', 'kim77@naver.com', 36 FROM DUAL
+UNION ALL
+SELECT 'hong1214', '김경호', '인천시 서구 가좌동', '대한민국', 'ho789@naver.com', 26 FROM DUAL
+UNION ALL
+SELECT 'hong1215', '민경훈', '경기도 수원시 수원1동', '대한민국', 'min@naver.com', 35 FROM DUAL
+UNION ALL
+SELECT 'hong1216', '바이브', '경기도 용인시 기흥구', '대한민국', 'vibe@naver.com', 33 FROM DUAL;
+
+ALTER TABLE MEMBER MODIFY NATION NCHAR(4);
+
+SELECT * FROM MEMBER;
+
+-- 오라클 객체
+-- 인덱스 / 뷰 / 시퀀스 / 동의어 
+
+-- 인덱스 : 빠른 검색
+--		1. 자동 생성 : 기본 키 설정 시 인덱스 자동 생성됨
+--		2. 직접 인덱스 생성 
+-- CREATE INDEX 인덱스명 ON 테이블명(열이름1 ASC/DESC, 열이름2 ....)
+-- EMP 테이블의 SAL 컬럼 INDEX 지정
+CREATE INDEX idx_emp_sal ON EMP(SAL);
+
+DROP INDEX idx_emp_sal;
+
+-- 뷰 : 가상 테이블
+--		1. 편리성 : 복잡한 SELECT문의 복잡도를 완화하기 위해
+--					자주 활용하는 SELECT문을 뷰로 저장해 놓은 후 다른 SQL 구문에서 활용 
+--		2. 보안성 : 노출되면 안되는 컬럼을 제외하여 접근 허용
+
+-- 뷰 생성할 수 있는 권한 필요
+-- CREATE OR REPLACE VIEW 뷰이름(열이름1, 열이름2 ....) AS (SELECT 구문)
+
+-- EMP 테이블의 20번 부서에 해당하는 사원들의 뷰 생성
+CREATE VIEW VW_EMP_20 AS (SELECT EMPNO, ENAME, JOB, DEPTNO FROM EMP WHERE DEPTNO = 20);
+
+DROP VIEW VW_EMP_20;
+
+CREATE VIEW VW_EMP_20 AS (SELECT * FROM EMP WHERE DEPTNO = 20);
+
+-- 뷰에 데이터 삽입 시 원본 테이블에 삽입이 일어남
+INSERT INTO VW_EMP_20 VALUES(6666, '홍길동', 'MANAGER', 7899, '2012-10-01', 1200, 0, 20);
+
+SELECT * FROM VW_EMP_20;
+SELECT * FROM EMP;
+
+-- 뷰는 SELECT만 가능하도록 제한
+CREATE VIEW VW_EMP_30 AS (SELECT EMPNO, ENAME, JOB, DEPTNO FROM EMP WHERE DEPTNO = 30) WITH READ ONLY;
 
 
+-- ROWNUM : 특수 컬럼(조회된 순서대로 일련번호 부여)
+-- ORDER BY 기준이 PK(기본키)가 아니면 번호가 제대로 부여되지 않음
+SELECT ROWNUM, e.*
+FROM EMP e
+ORDER BY SAL DESC;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- 정렬 기준이 PK가 아니라면 인라인 뷰에서 정렬 후 ROWNUM 번호 부여
+SELECT ROWNUM, e.*
+FROM (SELECT * FROM EMP ORDER BY SAL DESC) E;
 
 
 
