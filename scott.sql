@@ -1601,5 +1601,3 @@ SELECT * FROM BOARD;
 
 
 
-
-
