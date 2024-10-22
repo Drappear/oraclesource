@@ -97,7 +97,7 @@ CREATE TABLE board (
 	password varchar2(20) NOT NULL,
 	title varchar2(100) NOT NULL,
 	content varchar2(2000) NOT NULL,
-	attach varchar2(100) NOT NULL,
+	attach varchar2(100),
 	re_ref NUMBER(8) NOT NULL,
 	re_lev NUMBER(8) NOT NULL,
 	re_seq NUMBER(8) NOT NULL,
@@ -105,8 +105,68 @@ CREATE TABLE board (
 	regdate DATE DEFAULT sysdate
 );
 
+SELECT * FROM board ORDER BY bno DESC;
+
 -- sequence(board_seq)
 CREATE SEQUENCE board_seq;
+
+INSERT INTO board(bno, name, password, title, content, re_ref, re_lev, re_seq)
+VALUES(board_seq.nextval, 'hong', '12345', 'board제목', 'board글내용', board_seq.currval, 0, 0);
+
+SELECT bno, name, title, readcnt, regdate FROM board ORDER BY bno DESC;
+
+SELECT bno, name, password, title, content, attach, readcnt, regdate FROM board WHERE bno = 20;
+
+UPDATE board SET title = 'hello', content = 'hi' WHERE bno = 20 AND password = 12345;
+
+DELETE FROM board WHERE bno = 20 AND password = 12345;
+
+-- 조회수
+UPDATE board SET readcnt = readcnt + 1 WHERE bno = 1;
+
+-- 더미데이터
+INSERT INTO board(bno, name, password, title, content, re_ref, re_lev, re_seq)
+(SELECT board_seq.nextval, name, password, title, content, board_seq.currval, re_lev, re_seq FROM board);
+
+
+
+-- 댓글 처리
+-- 가장 최신글 댓글 처리
+SELECT * FROM board 
+WHERE bno = (SELECT max(bno) FROM board);
+
+
+-- 그룹 개념(re-ref)
+
+-- 댓글 추가
+INSERT INTO board(bno, name, password, title, content, re_ref, re_lev, re_seq)
+VALUES(board_seq.nextval, 'hong', '12345', 'board제목', 'board글내용', 747, 1, 1);
+
+-- UPDATE board SET re_lev = 1, re_seq = 1 WHERE bno = 748;
+
+-- 원본글과 댓글 함께 조회
+SELECT * FROM board WHERE re_ref = 747;
+
+-- 두번째 댓글 추가 (최신순 조회 : re_seq)
+-- re_seq 낮을수록 최신글
+
+-- 원본글
+-- ㄴ 댓글2
+--   ㄴ 댓글2의 댓글
+-- ㄴ 댓글1
+
+-- 댓글2 추가
+-- 먼저 들어간 댓글이 있다면 re_seq값을 +1
+UPDATE board SET re_seq = re_seq+1 WHERE re_ref = 747 AND re_seq > 0;
+
+INSERT INTO board(bno, name, password, title, content, re_ref, re_lev, re_seq)
+VALUES(board_seq.nextval, 'hong', '12345', 'board제목', 'board글내용', 747, 1, 1);
+
+SELECT * FROM board WHERE re_ref = 747 ORDER BY re_ref DESC, re_seq ASC;
+
+
+
+
 
 
 
