@@ -164,6 +164,36 @@ VALUES(board_seq.nextval, 'hong', '12345', 'board제목', 'board글내용', 747,
 
 SELECT * FROM board WHERE re_ref = 747 ORDER BY re_ref DESC, re_seq ASC;
 
+-- 검색
+SELECT bno, name, title, readcnt, regdate, re_lev FROM board ORDER BY re_ref DESC, re_seq ASC;
+
+-- SELECT bno, name, title, readcnt, regdate, re_lev FROM board 
+-- WHERE 'column' LIKE '%keyword%'
+-- ORDER BY re_ref DESC, re_seq ASC;
+
+
+
+-- 오라클 페이지 나누기
+-- 정렬 완료 후 번호를 매겨서 일부 추출
+SELECT rownum, bno, name, title, readcnt, regdate, re_lev FROM board ORDER BY re_ref DESC, re_seq ASC;
+
+SELECT rownum, bno, name, title, readcnt, regdate, re_lev FROM board ORDER BY bno DESC;
+
+
+SELECT rnum, bno, name, title, readcnt, regdate, re_lev
+FROM (SELECT rownum rnum, bno, name, title, readcnt, regdate, re_lev
+		FROM (SELECT bno, name, title, readcnt, regdate, re_lev 
+				FROM board ORDER BY re_ref DESC, re_seq ASC)
+		WHERE rownum <= 10)
+WHERE 
+;
+
+
+
+
+
+
+
 
 
 
