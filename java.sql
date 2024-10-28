@@ -184,17 +184,11 @@ SELECT rnum, bno, name, title, readcnt, regdate, re_lev
 FROM (SELECT rownum rnum, bno, name, title, readcnt, regdate, re_lev
 		FROM (SELECT bno, name, title, readcnt, regdate, re_lev 
 				FROM board ORDER BY re_ref DESC, re_seq ASC)
-		WHERE rownum <= 10)
-WHERE 
-;
+		WHERE rownum <= 30)
+WHERE rnum > 20;
 
 
-
-
-
-
-
-
+SELECT count(*) FROM board;
 
 
 
